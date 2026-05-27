@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DataSasa</title>
+
+<style>
+
+:root{
+  --primary:#16a34a;
+  --secondary:#22c55e;
+  --dark:#14532d;
+  --light:#f0fdf4;
+  --white:#ffffff;
+  --gray:#666;
+  --danger:#dc2626;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Segoe UI, sans-serif;
+  background:linear-gradient(180deg,#14532d,#16a34a,#22c55e);
+  min-height:100vh;
+  color:#111;
+}
+
+header{
+  text-align:center;
+  padding:20px;
+  color:white;
+  font-size:28px;
+  font-weight:800;
+  letter-spacing:1px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+.sub-header{
+  text-align:center;
+  color:white;
+  margin-top:-5px;
+  margin-bottom:20px;
+  font-size:14px;
+}
+
+.container{
+  max-width:850px;
+  margin:auto;
+  padding:20px;
+}
+
+.hero{
+  background:white;
+  padding:20px;
+  border-radius:20px;
+  text-align:center;
+  margin-bottom:25px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.15);
+}
+
+.hero h1{
+  color:var(--dark);
+  margin-bottom:8px;
+}
+
+.hero p{
+  color:var(--gray);
+}
+
+.bundle-grid{
+  display:grid;
+  gap:18px;
+}
+
+.bundle-card{
+  background:white;
+  border-radius:18px;
+  padding:18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  transition:.3s;
+  box-shadow:0 6px 20px rgba(0,0,0,0.1);
+  border-left:8px solid var(--primary);
+}
+
+.bundle-card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 10px 25px rgba(0,0,0,0.18);
+}
+
+.bundle-left h2{
+  color:var(--dark);
+  margin-bottom:5px;
+  font-size:22px;
+}
+
+.bundle-left p{
+  color:var(--gray);
+  font-size:14px;
+}
+
+.badge{
+  display:inline-block;
+  margin-top:8px;
+  background:var(--light);
+  color:var(--dark);
+  padding:4px 10px;
+  border-radius:30px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.bundle-right{
+  text-align:right;
+}
+
+.price{
+  font-size:24px;
+  color:var(--dark);
+  font-weight:800;
+  margin-bottom:10px;
+}
+
+.buy-btn{
+  border:none;
+  background:linear-gradient(90deg,var(--secondary),var(--primary));
+  color:white;
+  padding:12px 18px;
+  border-radius:12px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.buy-btn:hover{
+  opacity:.9;
+}
+
+.support{
+  background:white;
+  margin-top:25px;
+  padding:20px;
+  border-radius:18px;
+  text-align:center;
+  box-shadow:0 6px 20px rgba(0,0,0,0.12);
+}
+
+.support a{
+  color:var(--dark);
+  text-decoration:none;
+  font-weight:700;
+}
+
+.popup{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.65);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:999;
+}
+
+.popup.show{
+  display:flex;
+}
+
+.modal{
+  background:white;
+  width:100%;
+  max-width:520px;
+  border-radius:20px;
+  padding:25px;
+  animation:pop .25s ease;
+}
+
+@keyframes pop{
+  from{
+    opacity:0;
+    transform:scale(.95);
+  }
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+.modal h2{
+  color:var(--dark);
+  margin-bottom:10px;
+}
+
+.modal p{
+  color:var(--gray);
+  margin-bottom:15px;
+}
+
+.input-group{
+  margin-bottom:15px;
+}
+
+.input-group label{
+  display:block;
+  margin-bottom:6px;
+  font-weight:700;
+}
+
+.input-group input{
+  width:100%;
+  padding:14px;
+  border-radius:10px;
+  border:1px solid #ccc;
+  outline:none;
+  font-size:16px;
+}
+
+.instructions{
+  background:var(--light);
+  padding:15px;
+  border-radius:12px;
+  margin-top:15px;
+}
+
+.instructions li{
+  margin-bottom:10px;
+}
+
+.pay-btn{
+  width:100%;
+  margin-top:18px;
+  border:none;
+  padding:15px;
+  border-radius:12px;
+  background:linear-gradient(90deg,var(--secondary),var(--primary));
+  color:white;
+  font-size:18px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.close-btn{
+  margin-top:10px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#eee;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.footer{
+  text-align:center;
+  color:white;
+  padding:25px;
+  font-size:14px;
+}
+
+/* LOADING */
+
+.loading-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.75);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:99999;
+  backdrop-filter:blur(5px);
+}
+
+.loading-overlay.show{
+  display:flex;
+}
+
+.loader-box{
+  background:white;
+  width:90%;
+  max-width:350px;
+  border-radius:24px;
+  padding:30px;
+  text-align:center;
+  animation:pop .3s ease;
+}
+
+.spinner{
+  width:75px;
+  height:75px;
+  border:7px solid #dcfce7;
+  border-top:7px solid #16a34a;
+  border-radius:50%;
+  margin:auto;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+  100%{
+    transform:rotate(360deg);
+  }
+}
+
+.loader-title{
+  margin-top:20px;
+  font-size:22px;
+  font-weight:800;
+  color:#14532d;
+}
+
+.loader-text{
+  margin-top:10px;
+  color:#666;
+  line-height:1.5;
+}
+
+.success-animation{
+  width:85px;
+  height:85px;
+  border-radius:50%;
+  background:#16a34a;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:auto;
+  animation:successPop .4s ease;
+}
+
+.success-check{
+  color:white;
+  font-size:45px;
+  font-weight:bold;
+}
+
+@keyframes successPop{
+  0%{
+    transform:scale(.5);
+    opacity:0;
+  }
+  100%{
+    transform:scale(1);
+    opacity:1;
+  }
+}
+
+/* NOTIFICATION */
+
+.notification{
+  position:fixed;
+  top:20px;
+  right:20px;
+  background:white;
+  border-left:6px solid #16a34a;
+  width:320px;
+  padding:18px;
+  border-radius:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+  z-index:999999;
+  transform:translateX(400px);
+  transition:.4s;
+}
+
+.notification.show{
+  transform:translateX(0);
+}
+
+.notification h4{
+  margin-bottom:6px;
+  color:#14532d;
+}
+
+.notification p{
+  color:#555;
+  font-size:14px;
+  line-height:1.4;
+}
+
+.notification.error{
+  border-left-color:var(--danger);
+}
+
+@media(max-width:700px){
+
+  .bundle-card{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:15px;
+  }
+
+  .bundle-right{
+    width:100%;
+    text-align:left;
+  }
+
+  .buy-btn{
+    width:100%;
+  }
+
+  .notification{
+    width:90%;
+    right:5%;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>DataSasa</header>
+
+<div class="sub-header">
+Safaricom • Airtel • Telkom
+</div>
+
+<div class="container">
+<div class="hero">
+<h1>Affordable Internet Packages</h1>
+<p>Fast activation • Secure payment • Instant delivery</p>
+</div>
+
+<div class="bundle-grid">
+
+<div class="bundle-card">
+<div class="bundle-left">
+<h2>1GB • 1 HOUR</h2>
+<p>Perfect for WhatsApp and browsing</p>
+<span class="badge">Starter</span>
+</div>
+
+<div class="bundle-right">
+<div class="price">Ksh 20</div>
+<button class="buy-btn" onclick="openPopup('1GB • 1 HOUR',20)">
+Buy Package
+</button>
+</div>
+</div>
+
+<div class="bundle-card">
+<div class="bundle-left">
+<h2>1.5GB • 3 HOURS</h2>
+<p>Fast browsing and TikTok</p>
+<span class="badge">Popular</span>
+</div>
+
+<div class="bundle-right">
+<div class="price">Ksh 50</div>
+<button class="buy-btn" onclick="openPopup('1.5GB • 3 HOURS',50)">
+Buy Package
+</button>
+</div>
+</div>
+
+<div class="bundle-card">
+<div class="bundle-left">
+<h2>5GB • 24 HOURS</h2>
+<p>Great for YouTube and downloads</p>
+<span class="badge">Best Seller</span>
+</div>
+
+<div class="bundle-right">
+<div class="price">Ksh 100</div>
+<button class="buy-btn" onclick="openPopup('5GB • 24 HOURS',100)">
+Buy Package
+</button>
+</div>
+</div>
+
+<div class="bundle-card">
+<div class="bundle-left">
+<h2>10GB • 7 DAYS</h2>
+<p>Reliable package for daily usage</p>
+<span class="badge">Hot Deal</span>
+</div>
+
+<div class="bundle-right">
+<div class="price">Ksh 200</div>
+<button class="buy-btn" onclick="openPopup('10GB • 7 DAYS',200)">
+Buy Package
+</button>
+</div>
+</div>
+
+<div class="bundle-card">
+<div class="bundle-left">
+<h2>Unlimited • 30 DAYS</h2>
+<p>Unlimited browsing and streaming</p>
+<span class="badge">VIP</span>
+</div>
+
+<div class="bundle-right">
+<div class="price">Ksh 350</div>
+<button class="buy-btn" onclick="openPopup('Unlimited • 30 DAYS',350)">
+Buy Package
+</button>
+</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="support">
+<h3>Email Support</h3>
+<p>
+<a href="mailto:ikariesboogie@gmail.com">
+ikariesboogie@gmail.com
+</a>
+</p>
+</div>
+
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+
+<div class="modal">
+
+<h2>Complete Payment</h2>
+
+<p id="selectedPackage"></p>
+
+<div class="input-group">
+<label>Phone Number</label>
+
+<input
+type="tel"
+id="phone"
+placeholder="07XXXXXXXX"
+/>
+</div>
+
+<div class="input-group">
+<label>Amount</label>
+
+<input
+type="number"
+id="amount"
+readonly
+/>
+</div>
+
+<div class="instructions">
+
+<ol>
+<li>Enter your Safaricom number</li>
+<li>Click Proceed To Payment</li>
+<li>Wait for M-PESA STK Push</li>
+<li>Enter your M-PESA PIN</li>
+<li>Wait for package activation</li>
+</ol>
+
+</div>
+
+<button class="pay-btn" onclick="makePayment()">
+Proceed To Payment
+</button>
+
+<button class="close-btn" onclick="closePopup()">
+Cancel
+</button>
+
+</div>
+
+</div>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+
+<div class="loader-box" id="loaderBox">
+
+<div class="spinner" id="spinner"></div>
+
+<div class="loader-title" id="loaderTitle">
+Processing Payment
+</div>
+
+<div class="loader-text" id="loaderText">
+Please wait while we send the M-PESA STK Push to your phone.
+</div>
+
+</div>
+
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notification" id="notification">
+
+<h4 id="notificationTitle">
+Notification
+</h4>
+
+<p id="notificationMessage"></p>
+
+</div>
+
+<div class="footer">
+© 2026 Paysmart KE • All Rights Reserved
+</div>
+
+<script>
+
+let selectedPlan = "";
+let selectedPrice = "";
+
+function openPopup(plan, price){
+
+  selectedPlan = plan;
+  selectedPrice = price;
+
+  document.getElementById("popup")
+  .classList.add("show");
+
+  document.getElementById("selectedPackage")
+  .innerHTML =
+  "<strong>Selected:</strong> " + plan;
+
+  document.getElementById("amount")
+  .value = price;
+
+}
+
+function closePopup(){
+
+  document.getElementById("popup")
+  .classList.remove("show");
+
+}
+
+window.onclick = function(e){
+
+  const popup = document.getElementById("popup");
+
+  if(e.target === popup){
+    closePopup();
+  }
+
+}
+
+document.addEventListener("keydown",function(e){
+
+  if(e.key === "Escape"){
+    closePopup();
+  }
+
+});
+
+function generateOrderId(){
+
+  return "ORDER_" + Date.now();
+
+}
+
+function formatPhone(phone){
+
+  phone = phone.replace(/\D/g,'');
+
+  if(phone.startsWith("0")){
+    return "254" + phone.substring(1);
+  }
+
+  if(phone.startsWith("254")){
+    return phone;
+  }
+
+  return phone;
+
+}
+
+function showLoading(){
+
+  document.getElementById("loadingOverlay")
+  .classList.add("show");
+
+}
+
+function hideLoading(){
+
+  document.getElementById("loadingOverlay")
+  .classList.remove("show");
+
+}
+
+function showSuccess(){
+
+  document.getElementById("spinner")
+  .style.display = "none";
+
+  document.getElementById("loaderTitle")
+  .innerHTML = "Payment Accepted";
+
+  document.getElementById("loaderText")
+  .innerHTML =
+  "Check your phone and enter your M-PESA PIN.";
+
+  document.getElementById("loaderBox")
+  .insertAdjacentHTML(
+    "afterbegin",
+    `
+    <div class="success-animation" id="successAnimation">
+      <div class="success-check">✓</div>
+    </div>
+    `
+  );
+
+}
+
+function resetLoader(){
+
+  const success =
+  document.getElementById("successAnimation");
+
+  if(success){
+    success.remove();
+  }
+
+  document.getElementById("spinner")
+  .style.display = "block";
+
+  document.getElementById("loaderTitle")
+  .innerHTML = "Processing Payment";
+
+  document.getElementById("loaderText")
+  .innerHTML =
+  "Please wait while we send the M-PESA STK Push to your phone.";
+
+}
+
+function showNotification(title, message, type="success"){
+
+  const notification =
+  document.getElementById("notification");
+
+  notification.className = "notification";
+
+  if(type === "error"){
+    notification.classList.add("error");
+  }
+
+  document.getElementById("notificationTitle")
+  .innerHTML = title;
+
+  document.getElementById("notificationMessage")
+  .innerHTML = message;
+
+  notification.classList.add("show");
+
+  setTimeout(() => {
+
+    notification.classList.remove("show");
+
+  }, 5000);
+
+}
+
+async function makePayment(){
+
+  let phone =
+  document.getElementById("phone").value.trim();
+
+  const amount =
+  parseInt(document.getElementById("amount").value);
+
+  if(phone.length < 10){
+
+    showNotification(
+      "Invalid Number",
+      "Please enter a valid Safaricom number",
+      "error"
+    );
+
+    return;
+
+  }
+
+  phone = formatPhone(phone);
+
+  showLoading();
+
+  const payload = {
+    phone: phone,
+    amount: amount,
+    local_id: generateOrderId(),
+    transaction_desc: "Payment for " + selectedPlan
+  };
+
+  try {
+
+    const response = await fetch(
+      "https://api.nestlink.co.ke/runPrompt",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Api-Secret": "acf81139233924ae6136b624"
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    const data = await response.json();
+
+    console.log(data);
+
+    if(
+      data.status === true &&
+      data.data.ResponseCode === "0"
+    ){
+
+      showSuccess();
+
+      showNotification(
+        "Payment Accepted",
+        data.msg
+      );
+
+      setTimeout(() => {
+
+        hideLoading();
+        resetLoader();
+        closePopup();
+
+        document.getElementById("phone").value = "";
+
+      }, 3500);
+
+    } else {
+
+      hideLoading();
+
+      showNotification(
+        "Payment Failed",
+        data.msg || "Unable to process payment",
+        "error"
+      );
+
+    }
+
+  } catch(error){
+
+    console.error(error);
+
+    hideLoading();
+
+    showNotification(
+      "Network Error",
+      "Please check your internet connection and try again.",
+      "error"
+    );
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
